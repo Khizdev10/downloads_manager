@@ -5,6 +5,23 @@ import time
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
+
+
+import os
+
+def is_file_stable(path: Path, wait_time=2) -> bool:
+    """
+    Check if the file size stays the same for `wait_time` seconds.
+    Returns True if stable, False if still being written.
+    """
+    if not path.exists():
+        return False
+
+    initial_size = path.stat().st_size
+    time.sleep(wait_time)
+    return path.exists() and path.stat().st_size == initial_size
+
+
 rules = json.load(open("rules.json"))["rules"]
 home = Path.home()
 download_dir = home / "Downloads"
@@ -45,7 +62,6 @@ def move_item(src: Path, des: Path):
         return
     shutil.move(str(src), str(des / src.name))
 
-
 def organize_downloads():
     """Scan and organize all files in Downloads."""
     for item in download_dir.iterdir():
@@ -53,6 +69,8 @@ def organize_downloads():
             continue
         if not item.exists():
             continue
+        if not is_file_stable(item):
+            continue  # skip files still being written
 
         suffix1 = item.suffix.lower()
         if suffix1 in TEMP_EXTS:
@@ -72,7 +90,8 @@ def organize_downloads():
         move_item(item, dst)
 
 
-def wait_until_stable(path: Path, timeout: int = 30, interval: float = 1.0) -> bool:
+
+def wait_until_stable(path: Path, timeout: int = 30, interval: float = 20.0) -> bool:
     """
     Wait until file is stable (size stops changing).
     Returns True if stable within timeout, False otherwise.
@@ -124,7 +143,7 @@ if __name__ == "__main__":
 
     try:
         while True:
-            time.sleep(10)  # every 10 seconds, check again
+            time.sleep(100)  # every 10 seconds, check again
             organize_downloads()
     except KeyboardInterrupt:
         observer.stop()
