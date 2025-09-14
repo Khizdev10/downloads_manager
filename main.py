@@ -2,11 +2,9 @@ from pathlib import Path
 import json
 import shutil
 
-print("hello world")
 rules = json.load(open("rules.json"))["rules"]
 home = Path.home()
 download_dir = home / "Downloads"
-print(download_dir)
 
 
 def valid_name(path,name):
@@ -27,15 +25,6 @@ for item in download_dir.iterdir():
     if not src.exists():
         continue
    
-    # if suffix1 in rules[0]:
-    #     dst = Path(home / "Downloads" / "pdf" )
-    #     if(dst.exists()):
-    #         shutil.move(src, dst / item.name)
-    #     else:
-    #         dst.mkdir()
-    #         shutil.move(src, dst / item.name)
-
-        # print(suffix1 + " pdf")
 
     if suffix1 in rules[0]:
         dst = Path(valid_name(download_dir,"Documents"))
@@ -80,30 +69,5 @@ for item in download_dir.iterdir():
             dst.mkdir(parents=True)
             shutil.move(src, dst / item.name)
 
-        # print(suffix1 + " image")
-    # elif suffix1 in rules[2]:
-    #     dst = Path(home / "Downloads" / "executables" )
-    #     if(dst.exists()):
-    #         shutil.move(src, dst / item.name)
-    #     else:
-    #         dst.mkdir()
-    #         shutil.move(src, dst / item.name)
-    #     # print(suffix1 + " executable")
-    # elif suffix1 in rules[3]:
-    #     dst = Path(home / "Downloads" / "text" )
-    #     if(dst.exists()):
-    #         shutil.move(src, dst / item.name)
-    #     else:
-    #         dst.mkdir()
-    #         shutil.move(src, dst / item.name)
-    #     # print(suffix1 + " text")
-    # else:
-    #     dst = Path(home / "Downloads" / "unknown" )
-    #     if(dst.exists()):
-    #         shutil.move(src, dst / item.name)
-    #     else:
-    #         dst.mkdir()
-    #         shutil.move(src, dst / item.name)
-        # print(suffix1 + " unknown")
-
+  
 print(rules)    
