@@ -9,7 +9,7 @@ from watchdog.events import FileSystemEventHandler
 
 import os
 
-def is_file_stable(path: Path, wait_time=2) -> bool:
+def is_file_stable(path: Path, wait_time=20) -> bool:
     """
     Check if the file size stays the same for `wait_time` seconds.
     Returns True if stable, False if still being written.
